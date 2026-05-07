@@ -8,8 +8,8 @@
 
   "forwardPorts": [8000, 5173],
   "portsAttributes": {
-    "8000": { "label": "FastAPI Backend", "onAutoForward": "silent" },
-    "5173": { "label": "React Frontend",  "onAutoForward": "openBrowser" }
+    "8000": { "label": "FastAPI Backend", "onAutoForward": "silent",      "visibility": "private" },
+    "5173": { "label": "React Frontend",  "onAutoForward": "openBrowser", "visibility": "public"  }
   },
 
   "postCreateCommand": "bash .devcontainer/setup.sh",
