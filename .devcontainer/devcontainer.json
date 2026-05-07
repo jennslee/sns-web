@@ -13,7 +13,7 @@
   },
 
   "postCreateCommand": "bash .devcontainer/setup.sh",
-  "postStartCommand": "bash start.sh",
+  "postStartCommand": "bash start.sh > /tmp/sns-start.log 2>&1 &",
 
   "customizations": {
     "vscode": {
