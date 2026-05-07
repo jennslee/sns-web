@@ -5,8 +5,9 @@ echo "=== Installing Python dependencies ==="
 pip install fastapi uvicorn[standard] sqlalchemy aiosqlite python-dotenv aiofiles websockets 2>/dev/null || true
 
 echo "=== Installing Node dependencies ==="
-cd /workspaces/sns-web/frontend
+cd /workspaces/sns-web
 npm install
+npm install @rollup/rollup-linux-x64-gnu --save-optional 2>/dev/null || true
 
 echo "=== Creating placeholder .env ==="
 ENV_DIR="/workspaces/sns_analyzer"
