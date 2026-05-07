@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+*.env
+*.pickle
+*.pkl
+drive_token.pickle
+drive_client_secrets.json
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Node / Frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.local
+
+# SQLite DB
+*.db
+*.sqlite
+
+# Reports / output files
+reports/
+*.xlsx
+*.png
+*.jpg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Capacitor
+android/
+ios/
