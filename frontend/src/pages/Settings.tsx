@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { Save, Eye, EyeOff, CheckCircle2, AlertCircle, Settings2, Key, Globe, Database } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Save, Eye, EyeOff, CheckCircle2, AlertCircle, Key, Globe, Database } from 'lucide-react'
 import { useSettings, useSaveSettings } from '@/api/hooks'
 
 type Field = {
