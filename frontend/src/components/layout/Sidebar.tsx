@@ -2,19 +2,21 @@ import { NavLink } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { LayoutDashboard, Hash, PlayCircle, BarChart2, Settings, Zap, Activity } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
-const nav = [
-  { to: '/dashboard', icon: LayoutDashboard, label: '대시보드',  section: 'main' },
-  { to: '/keywords',  icon: Hash,            label: '키워드',    section: 'main' },
-  { to: '/analysis',  icon: PlayCircle,       label: '분석 실행', section: 'main' },
-  { to: '/results',   icon: BarChart2,        label: '결과 보기', section: 'main' },
-  { to: '/settings',  icon: Settings,         label: '설정',      section: 'system' },
-]
-
-const mainNav    = nav.filter(n => n.section === 'main')
-const systemNav  = nav.filter(n => n.section === 'system')
+import { useLang } from '@/contexts/LangContext'
 
 export default function Sidebar() {
+  const { t } = useLang()
+
+  const mainNav = [
+    { to: '/dashboard', icon: LayoutDashboard, label: t.nav.dashboard },
+    { to: '/keywords',  icon: Hash,            label: t.nav.keywords  },
+    { to: '/analysis',  icon: PlayCircle,       label: t.nav.analysis  },
+    { to: '/results',   icon: BarChart2,        label: t.nav.results   },
+  ]
+  const systemNav = [
+    { to: '/settings', icon: Settings, label: t.nav.settings },
+  ]
+
   return (
     <aside className="w-[220px] flex-shrink-0 flex flex-col border-r"
       style={{
@@ -39,7 +41,7 @@ export default function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-2 flex flex-col gap-0.5">
-        <p className="section-title px-3 mb-2">메뉴</p>
+        <p className="section-title px-3 mb-2">{t.nav.menu}</p>
         {mainNav.map(({ to, icon: Icon, label }, i) => (
           <NavLink key={to} to={to}>
             {({ isActive }) => (
@@ -73,7 +75,7 @@ export default function Sidebar() {
         <div className="flex-1" />
 
         <div className="divider" />
-        <p className="section-title px-3 mb-2">시스템</p>
+        <p className="section-title px-3 mb-2">{t.nav.system}</p>
         {systemNav.map(({ to, icon: Icon, label }) => (
           <NavLink key={to} to={to}>
             {({ isActive }) => (
@@ -94,8 +96,8 @@ export default function Sidebar() {
             <Activity size={12} className="text-white" />
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] font-medium text-gray-300 truncate">시스템 정상</p>
-            <p className="text-[10px] text-gray-600">v1.0.0 · Free</p>
+            <p className="text-[11px] font-medium text-gray-300 truncate">{t.status.systemOk}</p>
+            <p className="text-[10px] text-gray-600">v1.0.0 · {t.status.free}</p>
           </div>
           <div className="ml-auto w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
         </div>

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Save, Eye, EyeOff, CheckCircle2, AlertCircle, Key, Globe, Database } from 'lucide-react'
+import { Save, Eye, EyeOff, CheckCircle2, AlertCircle, Key, Globe, Database, Languages } from 'lucide-react'
 import { useSettings, useSaveSettings } from '@/api/hooks'
+import { useLang, type Lang } from '@/contexts/LangContext'
 
 type Field = {
   key: string; label: string; placeholder?: string
@@ -44,9 +45,15 @@ const SECTIONS = [
   },
 ]
 
+const LANG_OPTIONS: { value: Lang; label: string; flag: string }[] = [
+  { value: 'ko', label: '한국어', flag: '🇰🇷' },
+  { value: 'en', label: 'English', flag: '🇺🇸' },
+]
+
 export default function Settings() {
   const { data: settings, isLoading } = useSettings()
   const saveMutation = useSaveSettings()
+  const { lang, t, setLang } = useLang()
 
   const [form, setForm]       = useState<Record<string, any>>({})
   const [visible, setVisible] = useState<Record<string, boolean>>({})
@@ -131,6 +138,50 @@ export default function Settings() {
         </motion.div>
       ))}
 
+      {/* Language section */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: SECTIONS.length * .08 }}
+        className="glass rounded-2xl overflow-hidden"
+      >
+        <div className="px-5 py-4 flex items-center gap-3"
+          style={{ borderBottom: '1px solid rgba(255,255,255,.05)', background: 'rgba(255,255,255,.02)' }}>
+          <div className="w-8 h-8 rounded-xl gradient-brand flex items-center justify-center flex-shrink-0">
+            <Languages size={14} className="text-white" />
+          </div>
+          <div>
+            <h2 className="text-sm font-semibold text-white">{t.settings.appearance}</h2>
+            <p className="text-xs text-gray-600 mt-0.5">{t.settings.appearanceDesc}</p>
+          </div>
+        </div>
+        <div className="p-5">
+          <label className="text-xs font-medium text-gray-400 block mb-2.5">{t.settings.language}</label>
+          <div className="flex gap-2">
+            {LANG_OPTIONS.map(opt => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setLang(opt.value)}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150"
+                style={lang === opt.value ? {
+                  background: 'linear-gradient(135deg, rgba(99,102,241,.3), rgba(139,92,246,.2))',
+                  border: '1px solid rgba(99,102,241,.5)',
+                  color: '#a5b4fc',
+                  boxShadow: '0 2px 8px rgba(99,102,241,.2)',
+                } : {
+                  background: 'rgba(255,255,255,.04)',
+                  border: '1px solid rgba(255,255,255,.08)',
+                  color: '#6b7280',
+                }}
+              >
+                <span>{opt.flag}</span>
+                <span>{opt.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+
       {/* Save row */}
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .3 }}
@@ -138,7 +189,7 @@ export default function Settings() {
       >
         <button type="submit" disabled={saveMutation.isPending} className="btn-primary px-6 py-2.5">
           <Save size={14} />
-          {saveMutation.isPending ? '저장 중…' : '설정 저장'}
+          {saveMutation.isPending ? t.settings.saving : t.settings.save}
         </button>
         <AnimatePresence>
           {saved && (
@@ -146,7 +197,7 @@ export default function Settings() {
               initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 6 }}
               className="flex items-center gap-1.5 text-sm text-emerald-400"
             >
-              <CheckCircle2 size={14} />저장되었습니다
+              <CheckCircle2 size={14} />{t.settings.saved}
             </motion.span>
           )}
           {saveMutation.isError && (
@@ -154,7 +205,7 @@ export default function Settings() {
               initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-1.5 text-sm text-red-400"
             >
-              <AlertCircle size={14} />저장 실패
+              <AlertCircle size={14} />{t.settings.saveFailed}
             </motion.span>
           )}
         </AnimatePresence>

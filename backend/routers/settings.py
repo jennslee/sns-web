@@ -4,7 +4,10 @@ from dotenv import load_dotenv, set_key
 import os
 
 router = APIRouter(prefix="/api/settings", tags=["settings"])
-ENV_PATH = os.path.join(os.path.dirname(__file__), "../../sns_analyzer/.env")
+_sns_path = os.getenv("SNS_ANALYZER_PATH", os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "..", "sns_analyzer")
+))
+ENV_PATH = os.path.join(_sns_path, ".env")
 
 
 class SettingsBody(BaseModel):
@@ -52,6 +55,7 @@ def _apply(body: SettingsBody):
         "YOUTUBE_MAX_RESULTS":  str(body.max_posts)    if body.max_posts    is not None else None,
         "YOUTUBE_MAX_COMMENTS": str(body.max_comments) if body.max_comments is not None else None,
     }
+    os.makedirs(os.path.dirname(ENV_PATH), exist_ok=True)
     for key, val in mapping.items():
         if val is not None and val != "***":
             set_key(ENV_PATH, key, val)
