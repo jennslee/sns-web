@@ -7,8 +7,13 @@ from typing import Literal, List
 from database import get_db, AsyncSessionLocal
 from models import AnalysisJob, AnalysisResult, JobStatus
 
-SNS_ANALYZER_PATH = os.getenv("SNS_ANALYZER_PATH", "../sns_analyzer")
-sys.path.insert(0, SNS_ANALYZER_PATH)
+# E:\sns-web\backend → E:\sns_analyzer (두 단계 위 → sns_analyzer)
+_default_path = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "..", "sns_analyzer")
+)
+SNS_ANALYZER_PATH = os.getenv("SNS_ANALYZER_PATH", _default_path)
+if SNS_ANALYZER_PATH not in sys.path:
+    sys.path.insert(0, SNS_ANALYZER_PATH)
 
 router = APIRouter(prefix="/api/analysis", tags=["analysis"])
 
@@ -149,6 +154,22 @@ def _collect(keyword, platforms, max_posts):
     return pd.concat(frames, ignore_index=True)
 
 
+def _to_records(obj, n=None):
+    """DataFrame → list of dicts, Series → list of {tag, count}, anything else → list."""
+    import pandas as pd
+    if obj is None:
+        return []
+    if n is not None and hasattr(obj, "head"):
+        obj = obj.head(n)
+    if isinstance(obj, pd.DataFrame):
+        return obj.to_dict("records")
+    if isinstance(obj, pd.Series):
+        return [{"tag": k, "count": int(v)} for k, v in obj.items()]
+    if isinstance(obj, dict):
+        return [{"tag": k, "count": int(v)} for k, v in obj.items()]
+    return list(obj) if obj else []
+
+
 def _analyze(df, keyword):
     import os
     from analyzers.trend_analyzer      import TrendAnalyzer
@@ -188,10 +209,10 @@ def _analyze(df, keyword):
         "total_likes":      int(df["likes"].sum()),
         "total_views":      int(df.get("views", df["likes"] * 0).sum()),
         "total_comments":   int(df["comments_count"].sum()),
-        "top_hashtags":     top_hashtags.head(20).to_dict("records") if hasattr(top_hashtags, "to_dict") else top_hashtags,
-        "sentiment":        sentiment_stats.to_dict("records") if hasattr(sentiment_stats, "to_dict") else sentiment_stats,
-        "top_influencers":  top_influencers.head(10).to_dict("records") if hasattr(top_influencers, "to_dict") else top_influencers,
-        "top_words":        top_words.head(30).to_dict() if hasattr(top_words, "to_dict") else top_words,
+        "top_hashtags":     _to_records(top_hashtags, 20),
+        "sentiment":        _to_records(sentiment_stats),
+        "top_influencers":  _to_records(top_influencers, 10),
+        "top_words":        _to_records(top_words, 30),
         "chart_paths":      [p for p in chart_paths if p],
         "excel_path":       excel_path,
     }

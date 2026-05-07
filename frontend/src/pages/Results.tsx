@@ -151,16 +151,34 @@ function ResultCard({ result, open, onToggle }: { result: any; open: boolean; on
           {topInfluencers.length > 0 && (
             <div>
               <h3 className="text-xs font-semibold text-gray-400 mb-3">인플루언서 Top 5</h3>
-              <div className="space-y-2">
-                {topInfluencers.map((inf: any, i: number) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <span className="w-5 text-xs text-gray-600 font-mono">{i + 1}</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-white truncate">@{inf.username ?? inf[0]}</p>
+              <div className="space-y-2.5">
+                {topInfluencers.map((inf: any, i: number) => {
+                  const name = inf.author ?? inf.username ?? inf.channel_title ?? inf[0] ?? '알 수 없음'
+                  const engagement = inf.total_engagement ?? inf.engagement ?? inf[1] ?? 0
+                  const followers  = inf.followers ?? 0
+                  const tier = inf.tier
+                  return (
+                    <div key={i} className="flex items-center gap-2.5">
+                      <span className="w-4 text-[10px] text-gray-600 font-mono flex-shrink-0">{i + 1}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-white truncate">{name}</p>
+                        {followers > 0 && (
+                          <p className="text-[10px] text-gray-600">팔로워 {fmtNum(followers)}</p>
+                        )}
+                      </div>
+                      {tier && (
+                        <span className="text-[9px] px-1.5 py-0.5 rounded-full flex-shrink-0"
+                          style={{
+                            background: tier === 'mega' ? 'rgba(99,102,241,.15)' : 'rgba(16,185,129,.15)',
+                            color: tier === 'mega' ? '#a5b4fc' : '#34d399',
+                          }}>
+                          {tier}
+                        </span>
+                      )}
+                      <span className="text-xs text-gray-500 flex-shrink-0 tabular-nums">{fmtNum(engagement)}</span>
                     </div>
-                    <span className="text-xs text-gray-500">{fmtNum(inf.engagement ?? inf[1] ?? 0)}</span>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           )}
