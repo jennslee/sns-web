@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PlayCircle, Instagram, Youtube, Loader2, CheckCircle2, XCircle, Terminal, Zap } from 'lucide-react'
 import { useKeywords, useRunAnalysis } from '@/api/hooks'
+import { BASE_WS } from '@/api/client'
 
 type LogLine = { type: 'info' | 'success' | 'error'; text: string }
 
@@ -31,7 +32,7 @@ export default function Analysis() {
 
   useEffect(() => {
     if (!jobId) return
-    const ws = new WebSocket(`ws://${window.location.hostname}:8000/api/analysis/ws/${jobId}`)
+    const ws = new WebSocket(`${BASE_WS}/${jobId}`)
     wsRef.current = ws
     ws.onmessage = e => {
       const msg = JSON.parse(e.data)

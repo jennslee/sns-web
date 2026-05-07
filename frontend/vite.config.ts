@@ -12,8 +12,7 @@ export default defineConfig({
     host: true,
     allowedHosts: 'all',
     proxy: {
-      '/api': { target: 'http://localhost:8000', changeOrigin: true },
-      '/ws':  { target: 'ws://localhost:8000',  changeOrigin: true, ws: true },
+      '/api': { target: 'http://localhost:8000', changeOrigin: true, ws: true },
     },
   },
 })

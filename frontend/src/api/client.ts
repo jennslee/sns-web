@@ -5,4 +5,5 @@ export const api = axios.create({
   timeout: 30_000,
 })
 
-export const BASE_WS = import.meta.env.VITE_WS_URL ?? `ws://${location.host}/api/analysis/ws`
+const _wsProto = location.protocol === 'https:' ? 'wss' : 'ws'
+export const BASE_WS = import.meta.env.VITE_WS_URL ?? `${_wsProto}://${location.host}/api/analysis/ws`
