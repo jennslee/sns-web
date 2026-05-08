@@ -17,8 +17,8 @@ const SECTIONS = [
     desc: '외부 플랫폼 연동에 필요한 키를 입력하세요',
     fields: [
       { key: 'youtube_api_key',    label: 'YouTube API Key',   placeholder: 'AIzaSy…', secret: true, hint: 'Google Cloud Console에서 발급' },
-      { key: 'instagram_username', label: 'Instagram 사용자명', placeholder: '@username', hint: '선택사항 (2024년 이후 제한됨)' },
-      { key: 'instagram_password', label: 'Instagram 비밀번호', placeholder: '••••••',   secret: true },
+      { key: 'instagram_username', label: 'Instagram 사용자명', placeholder: 'username (@ 제외)', hint: '전용 계정 사용 권장 — 본계정은 차단 위험' },
+      { key: 'instagram_password', label: 'Instagram 비밀번호', placeholder: '••••••', secret: true, hint: '2단계 인증 있으면 앱 비밀번호 사용' },
     ] as Field[],
   },
   {
