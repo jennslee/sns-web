@@ -33,17 +33,20 @@ app.include_router(keywords.router)
 app.include_router(analysis.router)
 app.include_router(settings.router)
 
-# 정적 파일 (빌드된 React)
+@app.get("/api/health")
+async def health():
+    return {"status": "ok", "version": "1.0.0"}
+
+
+# 정적 파일 (빌드된 React) — API 라우트 등록 후에 catch-all 추가
 DIST = os.path.join(os.path.dirname(__file__), "../frontend/dist")
 if os.path.exists(DIST):
     app.mount("/assets", StaticFiles(directory=os.path.join(DIST, "assets")), name="assets")
 
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
+        if full_path.startswith("api/"):
+            from fastapi import HTTPException
+            raise HTTPException(404)
         index = os.path.join(DIST, "index.html")
         return FileResponse(index)
-
-
-@app.get("/api/health")
-async def health():
-    return {"status": "ok", "version": "1.0.0"}
