@@ -182,31 +182,43 @@ function ResultCard({ result, open, onToggle }: { result: any; open: boolean; on
                   <div>
                     <p className="text-xs font-semibold text-gray-400 mb-3">인플루언서 Top 5</p>
                     <div className="space-y-2.5">
-                      {topInfluencers.map((inf: any, i: number) => (
-                        <div key={i} className="flex items-center gap-2.5">
-                          <span className="w-4 text-[10px] text-gray-600 font-mono flex-shrink-0">{i + 1}</span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-medium text-white truncate">
-                              {inf.author ?? inf.username ?? inf.channel_title ?? '알 수 없음'}
-                            </p>
-                            {(inf.followers ?? 0) > 0 && (
-                              <p className="text-[10px] text-gray-600">팔로워 {fmtNum(inf.followers)}</p>
+                      {topInfluencers.map((inf: any, i: number) => {
+                        const name = inf.author ?? inf.username ?? inf.channel_title ?? '알 수 없음'
+                        const platform = inf.platform ?? result.platform ?? 'youtube'
+                        const profileUrl = platform === 'instagram'
+                          ? `https://www.instagram.com/${name.replace('@', '')}/`
+                          : `https://www.youtube.com/results?search_query=${encodeURIComponent(name)}+channel`
+                        return (
+                          <div key={i} className="flex items-center gap-2.5">
+                            <span className="w-4 text-[10px] text-gray-600 font-mono flex-shrink-0">{i + 1}</span>
+                            <div className="flex-1 min-w-0">
+                              <a
+                                href={profileUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs font-medium text-white truncate block hover:text-brand-400 transition-colors"
+                              >
+                                {name}
+                              </a>
+                              {(inf.followers ?? 0) > 0 && (
+                                <p className="text-[10px] text-gray-600">팔로워 {fmtNum(inf.followers)}</p>
+                              )}
+                            </div>
+                            {inf.tier && (
+                              <span className="text-[9px] px-1.5 py-0.5 rounded-full flex-shrink-0"
+                                style={{
+                                  background: inf.tier === 'mega' ? 'rgba(99,102,241,.15)' : 'rgba(16,185,129,.15)',
+                                  color:      inf.tier === 'mega' ? '#a5b4fc'              : '#34d399',
+                                }}>
+                                {inf.tier}
+                              </span>
                             )}
-                          </div>
-                          {inf.tier && (
-                            <span className="text-[9px] px-1.5 py-0.5 rounded-full flex-shrink-0"
-                              style={{
-                                background: inf.tier === 'mega' ? 'rgba(99,102,241,.15)' : 'rgba(16,185,129,.15)',
-                                color:      inf.tier === 'mega' ? '#a5b4fc'              : '#34d399',
-                              }}>
-                              {inf.tier}
+                            <span className="text-xs text-gray-500 tabular-nums flex-shrink-0">
+                              {fmtNum(inf.total_engagement ?? inf.engagement ?? 0)}
                             </span>
-                          )}
-                          <span className="text-xs text-gray-500 tabular-nums flex-shrink-0">
-                            {fmtNum(inf.total_engagement ?? inf.engagement ?? 0)}
-                          </span>
-                        </div>
-                      ))}
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
                 )}
