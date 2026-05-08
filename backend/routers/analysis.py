@@ -1,5 +1,6 @@
 import asyncio, os, sys
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect, BackgroundTasks, HTTPException
+from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from pydantic import BaseModel
@@ -224,6 +225,23 @@ def _upload_drive(keyword, chart_paths):
         upload_reports(keyword, chart_paths)
     except Exception:
         pass
+
+
+@router.get("/reports/chart")
+async def serve_chart(path: str):
+    """Serve a chart image by absolute path."""
+    if not os.path.isfile(path):
+        raise HTTPException(404, "File not found")
+    return FileResponse(path, media_type="image/png")
+
+
+@router.get("/reports/excel")
+async def serve_excel(path: str):
+    """Download an Excel report by absolute path."""
+    if not os.path.isfile(path):
+        raise HTTPException(404, "File not found")
+    filename = os.path.basename(path)
+    return FileResponse(path, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename=filename)
 
 
 @router.get("/results")
