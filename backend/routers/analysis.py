@@ -145,13 +145,16 @@ def _collect(keyword, platforms, max_posts):
         if not df.empty:
             frames.append(df)
     if "instagram" in platforms:
-        from collectors.instagram_collector import InstagramCollector
-        ig = InstagramCollector()
-        df = ig.collect_by_hashtag(keyword, max_posts)
-        if not df.empty:
-            frames.append(df)
+        try:
+            from collectors.instagram_collector import InstagramCollector
+            ig = InstagramCollector()
+            df = ig.collect_by_hashtag(keyword, max_posts)
+            if not df.empty:
+                frames.append(df)
+        except Exception as ig_err:
+            print(f"[Instagram] 수집 실패 (무시): {ig_err}")
     if not frames:
-        raise ValueError("수집된 데이터가 없습니다")
+        raise ValueError("수집된 데이터가 없습니다 (YouTube API 키 또는 네트워크를 확인하세요)")
     return pd.concat(frames, ignore_index=True)
 
 

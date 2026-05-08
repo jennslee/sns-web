@@ -125,7 +125,7 @@ export default function Analysis() {
         {/* Platform */}
         <div>
           <label className="text-xs font-medium text-gray-400 block mb-2.5">플랫폼</label>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {[
               { v: 'youtube',   label: 'YouTube',   Icon: Youtube,   iconCls: 'text-red-400' },
               { v: 'instagram', label: 'Instagram',  Icon: Instagram, iconCls: 'text-pink-400' },
@@ -151,6 +151,12 @@ export default function Analysis() {
               )
             })}
           </div>
+          {(platform === 'instagram' || platform === 'both') && (
+            <p className="mt-2 text-[11px] px-3 py-2 rounded-lg"
+              style={{ background: 'rgba(251,191,36,.08)', color: '#fbbf24', border: '1px solid rgba(251,191,36,.2)' }}>
+              ⚠️ Instagram은 2024년 이후 수집이 제한됩니다. 로그인 정보를 설정에서 입력해도 차단될 수 있습니다.
+            </p>
+          )}
         </div>
 
         {/* Max posts */}
